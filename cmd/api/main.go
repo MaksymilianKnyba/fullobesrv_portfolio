@@ -25,4 +25,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	shutdown := tracing.Init()
+	defer shutdown(context.Background())
 }

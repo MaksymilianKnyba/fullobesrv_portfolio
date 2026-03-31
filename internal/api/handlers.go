@@ -1,9 +1,11 @@
 package api
 
-import	(
+import (
 	"net/http"
 	"encoding/json"
 	"time"
+
+	"github.com/maksymilianKnyba/fullobesrv_portfolio/internal/db"
 )
 
 type HealthResponse struct {
@@ -20,10 +22,10 @@ func HealthHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(resp)
 }
 
-func ReadyHandler(databese *db.DB) http.HandlerFunc {
+func ReadyHandler(database *db.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
-		err := databese.Ping(ctx)
+		err := database.Ping(ctx)
 		if err != nil {
 			http.Error(w, "Database not ready", http.StatusServiceUnavailable)
 			return

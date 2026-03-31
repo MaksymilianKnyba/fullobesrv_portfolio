@@ -3,23 +3,26 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/maksymilianKnyba/fullobesrv_portfolio/internal/api"
 	"github.com/maksymilianKnyba/fullobesrv_portfolio/internal/db"
+	"github.com/maksymilianKnyba/fullobesrv_portfolio/internal/config"
 )
 
-func main()  {
-dsn := "postgres://postgres:postgres@db:5432/jobs"
-database, err := db.New(dsn)
-if err != nil {
-	log.Fatal(err)
+func main() {
+	cfg := config.Load()
+
+	database, err := db.New(cfg.DBUrl())
+	if err != nil {
+		log.Fatal(err)
 	}
 
-r := api.NewRouter()
-log.Println("Starting API server on :8080")
-err := http.ListenAndServe(":8080", r)
-if err != nil {
-	log.Fatal(err)
+	r := api.NewRouter(database)
+
+	log.Println("Starting server on :" + cfg.AppPort)
+
+	err = http.ListenAndServe(":"+cfg.AppPort, r)
+	if err != nil {
+		log.Fatal(err)
 	}
 }

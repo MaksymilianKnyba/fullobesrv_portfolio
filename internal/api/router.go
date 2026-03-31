@@ -1,8 +1,9 @@
-import {
+package api
+import (
 	"net/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-}
+)
 
 func NewRouter() http.Handler {
 	r := chi.NewRouter()
@@ -13,6 +14,7 @@ func NewRouter() http.Handler {
 	r.Use(middleware.RealIP)
 
 	r.Get("/health", HealthHandler)
+	r.Get("/ready", ReadyHandler(database))
 
 	return r
 }
